@@ -1,12 +1,13 @@
-import { Controller, Post, Get, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Body, Param, Put, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { KafkaService } from '../../../common/services/kafka.services';
+import { CreateUserDto } from '../dtos/create-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly kafkaService: KafkaService) {}
 
   @Post()
-  async create(@Body() body: any) {
+  async create(@Body() body: CreateUserDto) {
     return await this.kafkaService.send('user.create', body);
   }
 
@@ -16,12 +17,13 @@ export class UsersController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return await this.kafkaService.send('user.find.one', { id });
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() body: any) {
+  async update(@Param('id', ParseUUIDPipe) id: string, @Body() body: any) {
     return await this.kafkaService.send('user.update', { id, ...body });
   }
 
