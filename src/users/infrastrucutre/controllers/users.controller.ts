@@ -1,6 +1,7 @@
 import { Controller, Post, Get, Body, Param, Put, Delete, ParseUUIDPipe } from '@nestjs/common';
 import { KafkaService } from '../../../common/services/kafka.services';
 import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -23,7 +24,7 @@ export class UsersController {
   }
 
   @Put(':id')
-  async update(@Param('id', ParseUUIDPipe) id: string, @Body() body: any) {
+  async update(@Param('id', ParseUUIDPipe) id: string, @Body() body: UpdateUserDto) {
     return await this.kafkaService.send('user.update', { id, ...body });
   }
 
